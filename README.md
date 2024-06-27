@@ -30,7 +30,7 @@ Pasa
 
 EJ1. Refactorización
 
-[BORRAR] Solo si se considera necesario
+Solo si se considera necesario
 
 Justificar vuestra refactorización aquí.
 
