@@ -271,3 +271,65 @@ public void throwing(int pins) {
 **EJ6. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_6_pasa.png "Pasa")
+
+## EJEMPLO 7
+
+### Si en el segundo tiro del turno se derriban los bolos que quedan es spare y la puntuacion del siguiente tiro se suma.
+
+**EJ7. Código de test**
+```java
+@Test
+@DisplayName("Test spare")
+void testSpare() {
+	bowling.throwing(3);
+	bowling.throwing(7);
+	bowling.throwing(5);
+	bowling.throwing(5);
+	bowling.throwing(2);
+	bowling.throwing(1);
+	bowling.throwing(3);
+	bowling.throwing(4);
+	assertEquals(43,bowling.getScore());
+}
+```
+
+**EJ7. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <43> but was: <30>
+```
+
+**EJ7. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+	private boolean spare = false;
+	
+	public void throwing(int pins) {
+		[...]
+		//Sum score
+		score += pins;
+		if(spare) {
+			score+=pins;
+			//Deactivate spare
+			if(turn == 1) {
+				spare = false;
+			}
+		}
+		
+		//Check for spare
+		if(turn == 1 && previousThrow + pins == 10) {
+			spare = true;
+		}
+		
+		//Change turn
+		turn++;
+		turn%=2;
+		previousThrow = pins;
+	}
+```
+
+**EJ7. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_7_pasa1.png "Pasa")
