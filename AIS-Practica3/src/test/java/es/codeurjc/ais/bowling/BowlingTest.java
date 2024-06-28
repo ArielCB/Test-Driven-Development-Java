@@ -133,4 +133,30 @@ class BowlingTest{
 		assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
 	}
 	
+	@Test
+	@DisplayName("Test game ends Spare bonus")
+	void testEndsSpare() {
+		for(int i = 0;i<18;i++) {
+			bowling.throwing(0);
+		}
+		bowling.throwing(5);
+		bowling.throwing(5);
+		bowling.throwing(0);
+		IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+		assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+	}
+	
+	@Test
+	@DisplayName("Test game ends Strike bonus")
+	void testEndsStrike() {
+		for(int i = 0;i<18;i++) {
+			bowling.throwing(0);
+		}
+		bowling.throwing(10);
+		bowling.throwing(0);
+		bowling.throwing(0);
+		IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+		assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+	}
+	
 }

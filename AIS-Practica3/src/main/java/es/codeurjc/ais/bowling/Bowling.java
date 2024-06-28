@@ -6,8 +6,7 @@ public class Bowling{
 	private int previousThrow = 0;
 	private int turn = 0, frame = 1;
 	private boolean spare = false, strike1 = false, strike2 = false;
-	private boolean finalSpare = false;
-	private boolean finalStrike = false;
+	private boolean finalBonus = false;
 	
 	public void throwing(int pins) {
 		if( pins < 0) {
@@ -24,7 +23,7 @@ public class Bowling{
 		
 		//Sum score
 		score += pins;
-		if(!finalSpare && !finalStrike) {
+		if(!finalBonus) {
 			if(spare)  {
 				score += pins;
 			}
@@ -35,8 +34,8 @@ public class Bowling{
 				score += pins;
 			}
 		}
-		else{
-			frame--;
+		else {
+			frame++;
 		}
 		
 		//First throw
@@ -54,8 +53,8 @@ public class Bowling{
 				
 				//Last turn
 				if(frame == 10) {
-					finalStrike = true;
-					frame--;
+					finalBonus = true;
+					frame-=2;
 				}
 				
 				//Pass Frame
@@ -86,7 +85,7 @@ public class Bowling{
 				
 				//Last turn
 				if(frame == 10) {
-					finalSpare = true;
+					finalBonus = true;
 					frame--;
 				}
 			}
