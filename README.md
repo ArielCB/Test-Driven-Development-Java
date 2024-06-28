@@ -37,7 +37,7 @@ org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException
 
 **EJ1. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+El código minimo necesario para el test es que la función a la que llama lanze la excepción que desee.
 
 ```java
 public void throwing(int pins) {
@@ -71,7 +71,7 @@ org.opentest4j.AssertionFailedError: expected: <Number must be smaller than ten>
 
 **EJ2. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Ahora la función deberá lanzar una excepción u la otra dependiendo de ciertas condiciones para que ambos tests sean ciertos.
 
 ```java
 public void throwing(int pins) {
@@ -111,7 +111,9 @@ java.lang.IllegalArgumentException: Number must be smaller than ten
 
 **EJ3. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Para poder completar el test no se puede lanzar ninguna excepción por lo que ambas tendrán que lanzarse sólo si se llevan a cabo ciertas condiciones.
+
+getScore() devolverá 11 así contenta al test de la forma más simple.
 
 ```java
 public void throwing(int pins) {
@@ -157,7 +159,9 @@ org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
 
 **EJ4. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Ahora que el test nos obliga a dar diferentes resultados dependiendo de los datos que proporciona tenemos que modificar la clase para que almacene la puntuación que serán los bolos tirados acumulados con throwing.
+
+getScore() devolverá ese dato.
 
 ```java
 private int score=0;
@@ -204,7 +208,7 @@ org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException
 
 **EJ5. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Para que salte la excepción en el test estableceremos que se guarde el valor de los bolos tirados el turno anterior y si ambos suman más de diez saltará la excepción.
 
 ```java
 private int previousThrow=0;
@@ -248,7 +252,7 @@ java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
 
 **EJ6. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Crearemos un sistema de turnos, el 0 es la primera tirada, y el 1 la segunda. Si en el segundo turno se ve que se han tirado más de 10 bolos saltará la excepción.
 
 ```java
 private int turn = 0;
@@ -300,7 +304,9 @@ org.opentest4j.AssertionFailedError: expected: <43> but was: <30>
 
 **EJ7. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+En el test hay un spare sucedido de otro, este está sucedido de un tiro normal y termina con otro. Haciendo que nuestro código funcione para el test conseguiremos que funcione en casos en los que pase esto.
+
+Creamos una comprobación para que cuando esté en la segunda tirada y haya tirado los 10 bolos se guarde que la siguiente puntuacion es bonus en el booleano spare. cuando este activado la puntuación se sumara de nuevo como bonus del tiro anterior y si se está terminando el turno (en la segunda tirada) se declarará que ya se ha cumplido el bonus.
 
 ```java
 	private boolean spare = false;
@@ -336,6 +342,7 @@ Describe brevemente el código mínimo implementado
 **EJ7. Refactorización**
 
 El código es poco legible y se puede reorganizar para que se entienda y funcione mejor.
+
 La idea es hacerlo separando lo que pasa en cada turno.
 
 ```java
@@ -396,6 +403,7 @@ void testStrike() {
 	bowling.throwing(10);
 	bowling.throwing(5);
 	bowling.throwing(5);
+	bowling.throwing(10);
 	bowling.throwing(3);
 	bowling.throwing(4);
 	bowling.throwing(2);
@@ -405,7 +413,7 @@ void testStrike() {
 	bowling.throwing(0);
 	bowling.throwing(2);
 	bowling.throwing(1);
-	assertEquals(43,bowling.getScore());
+	assertEquals(154,bowling.getScore());
 }
 ```
 
@@ -417,7 +425,11 @@ java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
 
 **EJ8. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+De nuevo en el test se presentan varios plenos en condiciones distintas por lo que el código se tendrá que adaptar a todas. strike1 simbolizará el primer turno de bonus de un strike, y strike2 el segundo.
+
+Se comprueba si es la primera tirada del turno y se tiran 10 bolos se considera strike por lo que se maneja como final de turno y se tienen que deshabilitar los bonus para que no se cuenten en los siguientes turnos. También turn coge el valor de 3 para volverse impar y con el calculo de cambio de turno, el siguiente turno vuelva a ser turno 0.
+
+El bonus de strike se maneja de la siguiente forma. Si hay un strike, se declarará el bonus de strike1, y al terminar el turno siguiente este bonus se quitará, pero tiene que indicar que sigue habiendo bonus strike2. De esta forma si hay varios strikes seguidos cada cual podrá llevar a cabo sus bonuses.
 
 ```java
 private boolean strike1 = false, strike2 = false;
@@ -447,15 +459,17 @@ public void throwing(int pins) {
 			
 		//Check strike
 		if(pins == 10) {
+			
+			//Disable bonus
+			spare = false;
+			strike2 = false;
+
 			if(strike1) {
 				strike2 = true;
 			}
 			else {
 				strike1 = true;
 			}
-			
-			//Disable spare bonus
-			spare = false;
 			
 			turn = 3;
 		}
@@ -471,6 +485,7 @@ public void throwing(int pins) {
 **EJ8. Refactorización**
 
 El código es poco legible de nuevo y se puede reorganizar para que se entienda y funcione mejor.
+
 La forma de hacerlo es meter la desactivación del bonus de strike en el segundo turno. También nos ahorramos una comparación si el segundo turno es un else del primero.
 
 ```java
@@ -532,13 +547,14 @@ public void throwing(int pins) {
 @Test
 @DisplayName("Test ending spare")
 void testEndingSpare() {
-	for(int i = 0;i<18;i++) {
+	bowling.throwing(10);
+	for(int i = 0;i<16;i++) {
 		bowling.throwing(0);
 	}
 	bowling.throwing(5);
 	bowling.throwing(5);
 	bowling.throwing(7);
-	assertEquals(17,bowling.getScore());
+	assertEquals(27,bowling.getScore());
 }
 ```
 
@@ -550,7 +566,13 @@ org.opentest4j.AssertionFailedError: expected: <27> but was: <34>
 
 **EJ9. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Para empezar necesitamos llevar cuenta de los turnos. Los guardaremos en frame. Además, al haber un strike en el test, tenemos que asegurarnos también de que los strikes cuentan como turno.
+
+Se incrementará el turno cada segunda tirada de un turno y si se hace un strike.
+
+Lo siguiente es asegurarse de que el tiro bonus se ejecuta como bonus y no cuenta como tiro en sí.
+
+Cuando hay un spare comprobamos si es el turno 10, y si lo es declaramos que hay una tirada de bonus en el booleano finalBonus. La puntuación de la tirada bonus son los bolos que se tiran en la tirada, de forma que se asegura que no aplica ningún bonus anterior en la puntuación.
 
 ```java
 private int frame = 1;
@@ -635,7 +657,7 @@ org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
 
 **EJ10. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Para que se cumpla el test basta con comprobar si cuando hay un strike es en el décimo turno y si es así, declarar que los siguientes tiros son bonus con la variable que tenemos de antes.
 
 ```java
 public void throwing(int pins) {
@@ -645,13 +667,15 @@ public void throwing(int pins) {
 		
 		//Check strike
 		if(pins == 10) {
+			
+			//Disable bonus
+			spare = false;
+			strike2 = false;
+
 			if(strike1) {
 				strike2 = true;
 			}
 			strike1 = true;
-			
-			//Disable spare bonus
-			spare = false;
 			
 			//Last turn
 			if(frame == 10) {
@@ -691,12 +715,14 @@ void testEnds() {
 **EJ11. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
+org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
 ```
 
 **EJ11. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Bastaría con comprarar antes de nada si el turno es mayor que 10 y si es así lanzar la excepción requerida, pero entonces los testsde bonus no funcionarían ya que no hay nada que controle que el turno no avance en las jugadas bonus.
+
+De modo que incluiremos la comparación que lanza la excepción lo primero. Lo siguiente es que en los tiros bonus se reste el turno así nunca llega a superar 10 y los otros tests serían correctos también.
 
 ```java
 public void throwing(int pins) {
@@ -783,7 +809,7 @@ org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsExceptio
 
 **EJ12. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Tenemos que cambiar la modificación de antes para que en los tiros de bonus se sumen turnos en vez de quitarlos. En la comprobación de spare no tenemos que cambiar nada ya que antes lo habíamos modificado ya para que se restara un turno al ser bonus, y con sumar otro turno en el tiro bonus tenemos el número de turnos que necesitamos. En cambio, tenemos que cambiar la comprobación de bonus de strike porque restándole un solo turno no llega a los turnos necesarios para que funcione el test de bonus de strike.
 
 ```java
 public void throwing(int pins) {
@@ -847,7 +873,7 @@ org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsExceptio
 
 **EJ13. Código mínimo para que el test pase**
 
-Describe brevemente el código mínimo implementado
+Para que se pueda ejecutar con el número justo de turnos tendremos que restarle dos al comprobar que hay strike en el décimo turno. Como lo teníamos antes que le restaba un solo turno o todos se quedaba corto de turnos o se pasaba.
 
 ```java
 public void throwing(int pins) {
