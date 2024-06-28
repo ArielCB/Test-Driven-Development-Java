@@ -39,8 +39,8 @@ org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException
 Describe brevemente el código mínimo implementado
 
 ```java
-public String convert(int number){
-    return "I";
+public void throwing(int pins) {
+	throw new IllegalArgumentException("Number must be greater than zero");
 }
 ```
 
