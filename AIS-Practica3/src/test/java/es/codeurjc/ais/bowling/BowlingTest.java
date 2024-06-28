@@ -54,4 +54,12 @@ class BowlingTest{
 		assertEquals("You cant throw more than 10 pins per turn",ex.getMessage());
 	}
 	
+	@Test
+	@DisplayName("Test change of turns")
+	void testChangeOfTurns() {
+		bowling.throwing(0);
+		bowling.throwing(8);
+		bowling.throwing(9);
+		assertEquals(17,bowling.getScore());
+	}
 }
