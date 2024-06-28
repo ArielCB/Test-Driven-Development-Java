@@ -43,13 +43,15 @@ public class Bowling{
 			
 			//Check strike
 			if(pins == 10) {
+
+				//Disable bonus
+				spare = false;
+				strike2 = false;
+				
 				if(strike1) {
 					strike2 = true;
 				}
 				strike1 = true;
-				
-				//Disable spare bonus
-				spare = false;
 				
 				//Last turn
 				if(frame == 10) {
