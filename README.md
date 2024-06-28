@@ -22,7 +22,7 @@ void setup() {
 **EJ1. Código de test**
 ```java
 @Test
-@DisplayName("Test pins mayor que 0")
+@DisplayName("Test pins greater than 0")
 void testPins0() {
 	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
 	assertEquals("Number must be greater than zero", ex.getMessage());
@@ -56,7 +56,7 @@ public void throwing(int pins) {
 **EJ2. Código de test**
 ```java
 @Test
-@DisplayName("Test pins menor que 10")
+@DisplayName("Test pins smaller than 10")
 void testPins10() {
 	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(11));
 	assertEquals("Number must be smaller than ten", ex.getMessage());
@@ -94,7 +94,7 @@ public void throwing(int pins) {
 **EJ3. Código de test**
 ```java
 @Test
-@DisplayName("Test score = tiradas anteriores")
+@DisplayName("Test score = sum of throws")
 void testGetScore() {
 	bowling.throwing(4);
 	bowling.throwing(5);
@@ -140,7 +140,7 @@ public int getScore() {
 **EJ4. Código de test**
 ```java
 @Test
-@DisplayName("Test score = tiradas anteriores(2)")
+@DisplayName("Test score = sum of throws(2)")
 void testGetScore1() {
 	bowling.throwing(3);
 	bowling.throwing(3);
@@ -179,5 +179,54 @@ public int getScore() {
 ```
 
 **EJ4. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_4_pasa.png "Pasa")
+
+## EJEMPLO 5
+
+### En un turno (2 tiradas) no se pueden derribar más de 10 bolos.
+
+**EJ5. Código de test**
+```java
+@Test
+@DisplayName("Test score = tiradas anteriores(2)")
+void testGetScore1() {
+	bowling.throwing(3);
+	bowling.throwing(3);
+	bowling.throwing(1);
+	bowling.throwing(7);
+	assertEquals(14,bowling.getScore());
+}
+```
+
+**EJ5. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
+```
+
+**EJ5. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+private int score=0;
+	
+public void throwing(int pins) {
+	if( pins < 0) {
+		throw new IllegalArgumentException("Number must be greater than zero");
+	}
+	if( pins > 10) {
+		throw new IllegalArgumentException("Number must be smaller than ten");
+	}
+	score += pins;
+}
+
+public int getScore() {
+	return score;
+}	
+```
+
+**EJ5. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_4_pasa.png "Pasa")
