@@ -333,3 +333,51 @@ Describe brevemente el código mínimo implementado
 **EJ7. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_7_pasa1.png "Pasa")
+
+**EJ7. Refactorización**
+
+El código es poco legible y se puede reorganizar para que se entienda y funcione mejor.
+La idea es hacerlo separando lo que pasa en cada turno.
+
+```java
+public void throwing(int pins) {
+	if( pins < 0) {
+		throw new IllegalArgumentException("Number must be greater than zero");
+	}
+	if( pins > 10) {
+		throw new IllegalArgumentException("Number must be smaller than ten");
+	}
+	
+	//Any throw
+	
+	//Sum score
+	score += pins;
+	if(spare)  {
+		score += pins;
+	}
+
+	//Second throw
+	if(turn == 1) {
+		if( pins + previousThrow > 10) {
+			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
+		}
+		
+		//Disable spare bonus
+		spare = false;
+
+		//Check for spare
+		if(pins + previousThrow == 10) {
+			spare = true;
+		}
+	}
+	
+	//Change turn
+	turn++;
+	turn%=2;
+	previousThrow = pins;
+}
+```
+
+**EJ1. Captura de que TODOS los tests PASAN tras la refactorización**
+
+![Pasa](capturas/Ejemplo_1_PASA.png "Pasa")
