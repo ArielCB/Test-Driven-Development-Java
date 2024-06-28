@@ -122,4 +122,15 @@ class BowlingTest{
 		bowling.throwing(5);
 		assertEquals(19,bowling.getScore());
 	}
+	
+	@Test
+	@DisplayName("Test game ends")
+	void testEnds() {
+		for(int i = 0;i<20;i++) {
+			bowling.throwing(0);
+		}
+		IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+		assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+	}
+	
 }

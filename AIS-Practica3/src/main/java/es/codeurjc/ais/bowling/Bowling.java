@@ -16,6 +16,9 @@ public class Bowling{
 		if( pins > 10) {
 			throw new IllegalArgumentException("Number must be smaller than ten");
 		}
+		if(frame > 10) {
+			throw new IndexOutOfBoundsException("The game has finished, you cant throw anymore.");
+		}
 		
 		//Any throw
 		
@@ -31,6 +34,9 @@ public class Bowling{
 			if(strike1) {
 				score += pins;
 			}
+		}
+		else{
+			frame--;
 		}
 		
 		//First throw
@@ -49,6 +55,7 @@ public class Bowling{
 				//Last turn
 				if(frame == 10) {
 					finalStrike = true;
+					frame--;
 				}
 				
 				//Pass Frame
@@ -80,6 +87,7 @@ public class Bowling{
 				//Last turn
 				if(frame == 10) {
 					finalSpare = true;
+					frame--;
 				}
 			}
 			
