@@ -274,7 +274,7 @@ public void throwing(int pins) {
 
 ## EJEMPLO 7
 
-### Si en el segundo tiro del turno se derriban los bolos que quedan es spare y la puntuacion del siguiente tiro se suma.
+### Si en el segundo tiro del turno se derriban los bolos que quedan es spare y la puntuacion del siguiente turno se suma.
 
 **EJ7. Código de test**
 ```java
@@ -378,6 +378,146 @@ public void throwing(int pins) {
 }
 ```
 
-**EJ1. Captura de que TODOS los tests PASAN tras la refactorización**
+**EJ7. Captura de que TODOS los tests PASAN tras la refactorización**
 
 ![Pasa](capturas/Ejemplo_7_pasa2.png "Pasa")
+
+## EJEMPLO 8
+
+### Si se derriban 10 bolos en la primera tirada se considera un strike y la puntuacion de los siguientes dos turnos se suman a la de este.
+
+**EJ8. Código de test**
+```java
+@Test
+@DisplayName("Test strike")
+void testStrike() {
+	bowling.throwing(3);
+	bowling.throwing(7);
+	bowling.throwing(10);
+	bowling.throwing(10);
+	bowling.throwing(5);
+	bowling.throwing(5);
+	bowling.throwing(3);
+	bowling.throwing(4);
+	bowling.throwing(2);
+	bowling.throwing(1);
+	bowling.throwing(10);
+	bowling.throwing(4);
+	bowling.throwing(0);
+	bowling.throwing(2);
+	bowling.throwing(1);
+	assertEquals(43,bowling.getScore());
+}
+```
+
+**EJ8. Mensaje del test añadido que NO PASA**
+
+```log
+java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
+```
+
+**EJ8. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	[...]
+	//Sum score
+	score += pins;
+	if(spare)  {
+		score += pins;
+	}
+	if(strike2) {
+		score += pins;
+		if(turn == 1) {
+			strike2 = false;
+		}
+	}
+	if(strike1) {
+		score += pins;
+		if(turn == 1) {
+			strike2 = true;
+			strike1 = false;
+		}
+	}
+	//First throw
+	if(turn == 0) {
+			
+		//Check strike
+		if(pins == 10) {
+			if(strike1) {
+				strike2 = true;
+			}
+			else {
+				strike1 = true;
+			}
+			
+			//Disable spare bonus
+			spare = false;
+			
+			turn = 3;
+		}
+	}
+	[...]
+}
+```
+
+**EJ8. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_8_pasa1.png "Pasa")
+
+**EJ8. Refactorización**
+
+El código es poco legible de nuevo y se puede reorganizar para que se entienda y funcione mejor.
+La forma de hacerlo es meter la desactivación del bonus de strike en el segundo turno. También nos ahorramos una comparación si el segundo turno es un else del primero.
+
+```java
+public void throwing(int pins) {
+	[...]
+	//Any throw
+		
+	//Sum score
+	score += pins;
+	if(spare)  {
+		score += pins;
+	}
+	if(strike2) {
+		score += pins;
+	}
+	if(strike1) {
+		score += pins;
+	}
+
+	//First throw
+	if(turn == 0) {
+		[...]
+	}
+	//Second throw
+	else {
+		if( pins + previousThrow > 10) {
+			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
+		}
+		
+		//Disable bonus
+		spare = false;
+		if(strike1) {
+			strike2 = true;
+		}
+		else {
+			strike2 = false;
+		}
+		strike1 = false;
+		
+		//Check for spare
+		if(pins + previousThrow == 10) {
+			spare = true;
+		}
+	}
+	[...]
+}
+```
+
+**EJ8. Captura de que TODOS los tests PASAN tras la refactorización**
+
+![Pasa](capturas/Ejemplo_8_pasa2.png "Pasa")
