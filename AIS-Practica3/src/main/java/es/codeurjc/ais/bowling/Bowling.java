@@ -4,8 +4,9 @@ public class Bowling{
 	
 	private int score = 0;
 	private int previousThrow = 0;
-	private int turn = 0;
+	private int turn = 0, frame = 1;
 	private boolean spare = false, strike1 = false, strike2 = false;
+	private boolean finalSpare = false;
 	
 	public void throwing(int pins) {
 		if( pins < 0) {
@@ -19,16 +20,18 @@ public class Bowling{
 		
 		//Sum score
 		score += pins;
-		if(spare)  {
-			score += pins;
+		if(!finalSpare) {
+			if(spare)  {
+				score += pins;
+			}
+			if(strike2) {
+				score += pins;
+			}
+			if(strike1) {
+				score += pins;
+			}
 		}
-		if(strike2) {
-			score += pins;
-		}
-		if(strike1) {
-			score += pins;
-		}
-
+		
 		//First throw
 		if(turn == 0) {
 			
@@ -42,7 +45,9 @@ public class Bowling{
 				//Disable spare bonus
 				spare = false;
 				
+				//Pass Frame
 				turn++;
+				frame++;
 			}
 		}
 		
@@ -65,7 +70,13 @@ public class Bowling{
 			//Check for spare
 			if(pins + previousThrow == 10) {
 				spare = true;
+				if(frame == 10) {
+					finalSpare = true;
+				}
 			}
+			
+			//Pass frame
+			frame++;
 		}
 		
 		//Change turn

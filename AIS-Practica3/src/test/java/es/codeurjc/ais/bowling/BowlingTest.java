@@ -98,5 +98,17 @@ class BowlingTest{
 		assertEquals(128,bowling.getScore());
 	}
 	
+	@Test
+	@DisplayName("Test ending spare")
+	void testEndingSpare() {
+		bowling.throwing(10);
+		for(int i = 0;i<16;i++) {
+			bowling.throwing(0);
+		}
+		bowling.throwing(5);
+		bowling.throwing(5);
+		bowling.throwing(7);
+		assertEquals(27,bowling.getScore());
+	}
 	
 }
