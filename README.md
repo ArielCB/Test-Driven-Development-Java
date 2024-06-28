@@ -211,8 +211,8 @@ Describe brevemente el código mínimo implementado
 private int previousThrow=0;
 	
 public void throwing(int pins) {
-[...]
-if(previousThrow+pins>10) {
+	[...]
+	if(previousThrow+pins>10) {
 		throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
 	}
 	
@@ -223,4 +223,4 @@ if(previousThrow+pins>10) {
 
 **EJ5. Captura de que TODOS los test PASAN**
 
-![Pasa](capturas/Ejemplo_4_pasa.png "Pasa")
+![Pasa](capturas/Ejemplo_5_pasa.png "Pasa")
