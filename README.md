@@ -22,6 +22,7 @@ No se pueden derribar menos de 0 bolos en una tirada.
 **EJ1. Código de test**
 ```java
 @Test
+@DisplayName("Test pins menor que 0")
 void testPins0() {
 	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
 	assertEquals("Number must be greater than zero", ex.getMessage());
