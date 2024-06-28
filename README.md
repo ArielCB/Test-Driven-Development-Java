@@ -1,30 +1,37 @@
-# RomanNumbersKata - Ejemplo de memoria para la práctica de TDD
+# Bowling - Práctica de TDD
 
-Nombre de los alumnos: Michel Maes Bermejo e Iván Chicano Capelo
+Nombre de los alumnos: Ariel Carnés Blasco
 
 ### Setup de los tests
 
-Creamos el objeto bowling para no tener que hacerlo en cada test
+Creamos el objeto bowling para no tener que hacerlo en cada test.
 
-![setup](capturas/setup.png "Setup")
+```java
+Bowling bowling;
+	
+@BeforeEach
+void setup() {
+	bowling = new Bowling();
+}
+```
 
-### Ejemplo 1
+### EJEMPLO 1
 
-**INPUT y OUTPUT**: 1 -> "I"
+No se pueden derribar menos de 0 bolos en una tirada.
 
 **EJ1. Código de test**
 ```java
 @Test
-public void testI() {
-    RomanConverter converter = new RomanConverter();
-    assertEquals("I", converter.convert(1));
+void testPins0() {
+	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
+	assertEquals("Number must be greater than zero", ex.getMessage());
 }
 ```
 
 **EJ1. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: [I] but was: []
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
 ```
 
 **EJ1. Código mínimo para que el test pase**
