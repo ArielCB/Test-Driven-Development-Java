@@ -15,9 +15,9 @@ void setup() {
 }
 ```
 
-### EJEMPLO 1
+## EJEMPLO 1
 
-No se pueden derribar menos de 0 bolos en una tirada.
+### No se pueden derribar menos de 0 bolos en una tirada.
 
 **EJ1. Código de test**
 ```java
@@ -47,19 +47,38 @@ public void throwing(int pins) {
 
 **EJ1. Captura de que TODOS los test PASAN**
 
-![Pasa](capturas/Ejemplo_1_PASA.png "Pasa")
+![Pasa](capturas/Ejemplo_1_pasa.png "Pasa")
 
-**EJ1. Refactorización**
-> [BORRAR]  Solo si se considera necesario
+## EJEMPLO 2
 
-Justificar vuestra refactorización aquí.
+### No se pueden derribar más de 10 bolos en una tirada.
 
+**EJ1. Código de test**
 ```java
-public String convert(int number){
-    return "I"; // Imaginemos que hemos refactorizado aquí
+@Test
+@DisplayName("Test pins menor que 0")
+void testPins0() {
+	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
+	assertEquals("Number must be greater than zero", ex.getMessage());
 }
 ```
-**EJ1. Captura de que TODOS los tests PASAN tras la refactorización**
-> [BORRAR]  Solo si se ha realizado una refactorización
 
-![Pasa](capturas/Ejemplo_1_PASA.png "Pasa")
+**EJ1. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+```
+
+**EJ1. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	throw new IllegalArgumentException("Number must be greater than zero");
+}
+```
+
+**EJ1. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_1_pasa.png "Pasa")
