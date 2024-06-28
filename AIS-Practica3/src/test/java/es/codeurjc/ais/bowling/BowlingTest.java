@@ -46,14 +46,12 @@ class BowlingTest{
 		assertEquals(14,bowling.getScore());
 	}
 	
-/*	@Test
+	@Test
 	@DisplayName("Pins in a turn <= 10")
 	void testPinsPerThrow() {
-		bowling.throwing(3);
-		bowling.throwing(3);
-		bowling.throwing(1);
-		bowling.throwing(7);
-		assertEquals(14,bowling.getScore());
+		bowling.throwing(9);
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,() -> bowling.throwing(9));
+		assertEquals("You cant throw more than 10 pins per turn",ex.getMessage());
 	}
-	*/
+	
 }
