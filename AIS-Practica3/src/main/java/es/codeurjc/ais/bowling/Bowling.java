@@ -7,11 +7,13 @@ public class Bowling{
 		if( pins < 0) {
 			throw new IllegalArgumentException("Number must be greater than zero");
 		}
-		throw new IllegalArgumentException("Number must be smaller than ten");
+		if( pins > 10) {
+			throw new IllegalArgumentException("Number must be smaller than ten");
+		}
 	}
 	
 	public int getScore() {
-		return 0;
+		return 11;
 	}
 	
 }

@@ -26,4 +26,14 @@ class BowlingTest{
 		assertEquals("Number must be smaller than ten", ex.getMessage());
 	}
 	
+	@Test
+	@DisplayName("Test score = tiradas anteriores")
+	void testGetScore() {
+		bowling.throwing(4);
+		bowling.throwing(5);
+		bowling.throwing(0);
+		bowling.throwing(2);
+		assertEquals(11,bowling.getScore());
+	}
+	
 }
