@@ -607,3 +607,82 @@ public void throwing(int pins) {
 **EJ9. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_9_pasa.png "Pasa")
+
+## EJEMPLO 10
+
+### Si en el décimo turno se consigue un strike, el bonus serán los bolos derribados en dos tiradas extra.
+
+**EJ10. Código de test**
+```java
+@Test
+@DisplayName("Test ending strike")
+void testEndingStrike() {
+	for(int i = 0;i<18;i++) {
+		bowling.throwing(0);
+	}
+	bowling.throwing(10);
+	bowling.throwing(4);
+	bowling.throwing(5);
+	assertEquals(19,bowling.getScore());
+}
+```
+
+**EJ10. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
+```
+
+**EJ10. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+private boolean finalStrike = false;
+
+public void throwing(int pins) {
+	[...]
+	//Sum score
+	score += pins;
+	if(!finalSpare && !finalStrike) {
+		if(spare)  {
+			score += pins;
+		}
+		if(strike2) {
+			score += pins;
+		}
+		if(strike1) {
+			score += pins;
+		}
+	}
+	
+	//First throw
+	if(turn == 0) {
+		
+		//Check strike
+		if(pins == 10) {
+			if(strike1) {
+				strike2 = true;
+			}
+			strike1 = true;
+			
+			//Disable spare bonus
+			spare = false;
+			
+			//Last turn
+			if(frame == 10) {
+				finalStrike = true;
+			}
+			
+			//Pass Frame
+			turn++;
+			frame++;
+		}
+	}
+	[...]
+}
+```
+
+**EJ10. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_10_pasa.png "Pasa")
