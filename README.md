@@ -132,3 +132,52 @@ public int getScore() {
 **EJ3. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_3_pasa.png "Pasa")
+
+## EJEMPLO 4
+
+### Otro caso de tiradas para asegurarse de que el codigo se adapta.
+
+**EJ4. Código de test**
+```java
+@Test
+@DisplayName("Test score = tiradas anteriores(2)")
+void testGetScore1() {
+	bowling.throwing(3);
+	bowling.throwing(3);
+	bowling.throwing(1);
+	bowling.throwing(7);
+	assertEquals(14,bowling.getScore());
+}
+```
+
+**EJ4. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
+```
+
+**EJ4. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+private int score=0;
+	
+public void throwing(int pins) {
+	if( pins < 0) {
+		throw new IllegalArgumentException("Number must be greater than zero");
+	}
+	if( pins > 10) {
+		throw new IllegalArgumentException("Number must be smaller than ten");
+	}
+	score += pins;
+}
+
+public int getScore() {
+	return score;
+}	
+```
+
+**EJ4. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_4_pasa.png "Pasa")
