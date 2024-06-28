@@ -36,4 +36,14 @@ class BowlingTest{
 		assertEquals(11,bowling.getScore());
 	}
 	
+	@Test
+	@DisplayName("Test score = tiradas anteriores(2)")
+	void testGetScore1() {
+		bowling.throwing(3);
+		bowling.throwing(3);
+		bowling.throwing(1);
+		bowling.throwing(7);
+		assertEquals(14,bowling.getScore());
+	}
+	
 }
