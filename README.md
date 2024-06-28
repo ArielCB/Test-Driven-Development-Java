@@ -86,3 +86,49 @@ public void throwing(int pins) {
 **EJ2. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_2_pasa.png "Pasa")
+
+## EJEMPLO 3
+
+### El score devuelve la suma de las tiradas anteriores (Ejemplo con tiradas que no son spare o strike).
+
+**EJ3. Código de test**
+```java
+@Test
+@DisplayName("Test score = tiradas anteriores")
+void testGetScore() {
+	bowling.throwing(4);
+	bowling.throwing(5);
+	bowling.throwing(0);
+	bowling.throwing(2);
+	assertEquals(11,bowling.getScore());
+}
+```
+
+**EJ3. Mensaje del test añadido que NO PASA**
+
+```log
+java.lang.IllegalArgumentException: Number must be smaller than ten
+```
+
+**EJ3. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	if( pins < 0) {
+		throw new IllegalArgumentException("Number must be greater than zero");
+	}
+	if( pins > 10) {
+		throw new IllegalArgumentException("Number must be smaller than ten");
+	}
+}
+
+public int getScore() {
+	return 11;
+}
+```
+
+**EJ3. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_3_pasa.png "Pasa")
