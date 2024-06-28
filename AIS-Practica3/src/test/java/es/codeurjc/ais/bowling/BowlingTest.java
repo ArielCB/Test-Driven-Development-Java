@@ -13,21 +13,21 @@ class BowlingTest{
 	}
 	
 	@Test
-	@DisplayName("Test pins mayor que 0")
+	@DisplayName("Test pins greater than 0")
 	void testPins0() {
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
 		assertEquals("Number must be greater than zero", ex.getMessage());
 	}
 	
 	@Test
-	@DisplayName("Test pins menor que 10")
+	@DisplayName("Test pins smaller than 10")
 	void testPins10() {
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(11));
 		assertEquals("Number must be smaller than ten", ex.getMessage());
 	}
 	
 	@Test
-	@DisplayName("Test score = tiradas anteriores")
+	@DisplayName("Test score = sum of throws")
 	void testGetScore() {
 		bowling.throwing(4);
 		bowling.throwing(5);
@@ -37,7 +37,7 @@ class BowlingTest{
 	}
 	
 	@Test
-	@DisplayName("Test score = tiradas anteriores(2)")
+	@DisplayName("Test score = sum of throws(2)")
 	void testGetScore1() {
 		bowling.throwing(3);
 		bowling.throwing(3);
@@ -46,4 +46,14 @@ class BowlingTest{
 		assertEquals(14,bowling.getScore());
 	}
 	
+/*	@Test
+	@DisplayName("Pins in a turn <= 10")
+	void testPinsPerThrow() {
+		bowling.throwing(3);
+		bowling.throwing(3);
+		bowling.throwing(1);
+		bowling.throwing(7);
+		assertEquals(14,bowling.getScore());
+	}
+	*/
 }
