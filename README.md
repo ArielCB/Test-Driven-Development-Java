@@ -189,20 +189,18 @@ public int getScore() {
 **EJ5. Código de test**
 ```java
 @Test
-@DisplayName("Test score = tiradas anteriores(2)")
-void testGetScore1() {
-	bowling.throwing(3);
-	bowling.throwing(3);
-	bowling.throwing(1);
-	bowling.throwing(7);
-	assertEquals(14,bowling.getScore());
+@DisplayName("Pins in a turn <= 10")
+void testPinsPerThrow() {
+	bowling.throwing(9);
+	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,() -> bowling.throwing(9));
+	assertEquals("You cant throw more than 10 pins per turn",ex.getMessage());
 }
 ```
 
 **EJ5. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
 ```
 
 **EJ5. Código mínimo para que el test pase**
@@ -210,21 +208,17 @@ org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
 Describe brevemente el código mínimo implementado
 
 ```java
-private int score=0;
+private int previousThrow=0;
 	
 public void throwing(int pins) {
-	if( pins < 0) {
-		throw new IllegalArgumentException("Number must be greater than zero");
+[...]
+if(previousThrow+pins>10) {
+		throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
 	}
-	if( pins > 10) {
-		throw new IllegalArgumentException("Number must be smaller than ten");
-	}
+	
 	score += pins;
+	previousThrow = pins;
 }
-
-public int getScore() {
-	return score;
-}	
 ```
 
 **EJ5. Captura de que TODOS los test PASAN**
