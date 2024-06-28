@@ -62,4 +62,19 @@ class BowlingTest{
 		bowling.throwing(9);
 		assertEquals(17,bowling.getScore());
 	}
+	
+	@Test
+	@DisplayName("Test spare")
+	void testSpare() {
+		bowling.throwing(3);
+		bowling.throwing(7);
+		bowling.throwing(5);
+		bowling.throwing(5);
+		bowling.throwing(2);
+		bowling.throwing(1);
+		bowling.throwing(3);
+		bowling.throwing(4);
+		assertEquals(43,bowling.getScore());
+	}
+	
 }

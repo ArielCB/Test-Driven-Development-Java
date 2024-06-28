@@ -5,6 +5,7 @@ public class Bowling{
 	private int score = 0;
 	private int previousThrow = 0;
 	private int turn = 0;
+	private boolean spare = false;
 	
 	public void throwing(int pins) {
 		if( pins < 0) {
@@ -13,16 +14,30 @@ public class Bowling{
 		if( pins > 10) {
 			throw new IllegalArgumentException("Number must be smaller than ten");
 		}
-		if(turn ==1 && previousThrow+pins>10) {
+		if(turn == 1 && previousThrow + pins > 10) {
 			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
 		}
 		
+		//Sum score
 		score += pins;
-		previousThrow = pins;
+		if(spare) {
+			score+=pins;
+			
+			//Deactivate spare
+			if(turn == 1) {
+				spare = false;
+			}
+		}
 		
-		//Cambio de turno
+		//Check forvspare
+		if(turn == 1 && previousThrow + pins == 10) {
+			spare = true;
+		}
+		
+		//Change turn
 		turn++;
 		turn%=2;
+		previousThrow = pins;
 	}
 	
 	public int getScore() {
