@@ -111,4 +111,15 @@ class BowlingTest{
 		assertEquals(27,bowling.getScore());
 	}
 	
+	@Test
+	@DisplayName("Test ending strike")
+	void testEndingStrike() {
+		for(int i = 0;i<18;i++) {
+			bowling.throwing(0);
+		}
+		bowling.throwing(10);
+		bowling.throwing(4);
+		bowling.throwing(5);
+		assertEquals(19,bowling.getScore());
+	}
 }
