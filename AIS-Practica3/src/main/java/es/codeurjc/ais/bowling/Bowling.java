@@ -4,6 +4,7 @@ public class Bowling{
 	
 	
 	public void throwing(int pins) {
+		
 	}
 	
 	public int getScore() {
