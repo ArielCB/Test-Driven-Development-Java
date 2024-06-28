@@ -13,10 +13,17 @@ class BowlingTest{
 	}
 	
 	@Test
-	@DisplayName("Test pins menor que 0")
+	@DisplayName("Test pins mayor que 0")
 	void testPins0() {
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
 		assertEquals("Number must be greater than zero", ex.getMessage());
+	}
+	
+	@Test
+	@DisplayName("Test pins menor que 10")
+	void testPins10() {
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(11));
+		assertEquals("Number must be smaller than ten", ex.getMessage());
 	}
 	
 }
