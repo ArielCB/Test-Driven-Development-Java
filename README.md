@@ -380,4 +380,4 @@ public void throwing(int pins) {
 
 **EJ1. Captura de que TODOS los tests PASAN tras la refactorización**
 
-![Pasa](capturas/Ejemplo_1_PASA.png "Pasa")
+![Pasa](capturas/Ejemplo_7_PASA2.png "Pasa")
