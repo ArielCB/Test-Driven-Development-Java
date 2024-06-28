@@ -224,3 +224,50 @@ public void throwing(int pins) {
 **EJ5. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_5_pasa.png "Pasa")
+
+## EJEMPLO 6
+
+### Dos tiradas seguidas puedan superar 10 si es cada una en un turno diferente.
+
+**EJ6. Código de test**
+```java
+@Test
+@DisplayName("Test change of turns")
+void testChangeOfTurns() {
+	bowling.throwing(0);
+	bowling.throwing(8);
+	bowling.throwing(9);
+	assertEquals(17,bowling.getScore());
+}
+```
+
+**EJ6. Mensaje del test añadido que NO PASA**
+
+```log
+java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
+```
+
+**EJ6. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+private int turn = 0;
+	
+public void throwing(int pins) {
+	[...]
+	if(turn ==1 && previousThrow+pins>10) {
+		throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
+	}
+	
+	score += pins;
+	previousThrow = pins;
+
+	turn++;
+	turn%=2;
+}
+```
+
+**EJ6. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_6_pasa.png "Pasa")
