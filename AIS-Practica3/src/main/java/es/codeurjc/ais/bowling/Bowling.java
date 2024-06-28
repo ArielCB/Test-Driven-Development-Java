@@ -14,24 +14,28 @@ public class Bowling{
 		if( pins > 10) {
 			throw new IllegalArgumentException("Number must be smaller than ten");
 		}
-		if(turn == 1 && previousThrow + pins > 10) {
-			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
-		}
+		
+		//Any throw
 		
 		//Sum score
 		score += pins;
-		if(spare) {
-			score+=pins;
-			
-			//Deactivate spare
-			if(turn == 1) {
-				spare = false;
-			}
+		if(spare)  {
+			score += pins;
 		}
-		
-		//Check forvspare
-		if(turn == 1 && previousThrow + pins == 10) {
-			spare = true;
+
+		//Second throw
+		if(turn == 1) {
+			if( pins + previousThrow > 10) {
+				throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
+			}
+			
+			//Disable spare bonus
+			spare = false;
+			
+			//Check for spare
+			if(pins + previousThrow == 10) {
+				spare = true;
+			}
 		}
 		
 		//Change turn
