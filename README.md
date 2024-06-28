@@ -686,3 +686,87 @@ public void throwing(int pins) {
 **EJ10. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_10_pasa.png "Pasa")
+
+## EJEMPLO 11
+
+### El juego terminará en el décimo turno.
+
+**EJ11. Código de test**
+```java
+@Test
+@DisplayName("Test game ends")
+void testEnds() {
+	for(int i = 0;i<20;i++) {
+		bowling.throwing(0);
+	}
+	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+}
+```
+
+**EJ11. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
+```
+
+**EJ11. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	[...]
+	if(frame > 10) {
+		throw new IndexOutOfBoundsException("The game has finished, you cant throw anymore.");
+	}
+	//Sum score
+	score += pins;
+	if(!finalSpare && !finalStrike) {
+		[...]
+	}
+	else{
+		frame--;
+	}
+
+	//First throw
+	if(turn == 0) {
+		
+		//Check strike
+		if(pins == 10) {
+			[...]
+			//Last turn
+			if(frame == 10) {
+				finalStrike = true;
+				frame--;
+			}
+			
+			//Pass Frame
+			turn++;
+			frame++;
+		}
+	}
+	
+	//Second throw
+	else {
+		[...]
+		if(pins + previousThrow == 10) {
+			spare = true;
+			
+			//Last turn
+			if(frame == 10) {
+				finalSpare = true;
+				frame--;
+			}
+		}
+		
+		//Pass frame
+		frame++;
+	}
+	[...]
+}
+```
+
+**EJ11. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_11_pasa.png "Pasa")
