@@ -22,7 +22,7 @@ void setup() {
 **EJ1. Código de test**
 ```java
 @Test
-@DisplayName("Test pins menor que 0")
+@DisplayName("Test pins mayor que 0")
 void testPins0() {
 	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
 	assertEquals("Number must be greater than zero", ex.getMessage());
@@ -53,32 +53,36 @@ public void throwing(int pins) {
 
 ### No se pueden derribar más de 10 bolos en una tirada.
 
-**EJ1. Código de test**
+**EJ2. Código de test**
 ```java
 @Test
-@DisplayName("Test pins menor que 0")
-void testPins0() {
-	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
-	assertEquals("Number must be greater than zero", ex.getMessage());
+@DisplayName("Test pins menor que 10")
+void testPins10() {
+	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(11));
+	assertEquals("Number must be smaller than ten", ex.getMessage());
 }
 ```
 
-**EJ1. Mensaje del test añadido que NO PASA**
+**EJ2. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+org.opentest4j.AssertionFailedError: expected: <Number must be smaller than ten> but was: <Number must be greater than zero>
+
 ```
 
-**EJ1. Código mínimo para que el test pase**
+**EJ2. Código mínimo para que el test pase**
 
 Describe brevemente el código mínimo implementado
 
 ```java
 public void throwing(int pins) {
-	throw new IllegalArgumentException("Number must be greater than zero");
+	if( pins < 0) {
+		throw new IllegalArgumentException("Number must be greater than zero");
+	}
+	throw new IllegalArgumentException("Number must be smaller than ten");
 }
 ```
 
-**EJ1. Captura de que TODOS los test PASAN**
+**EJ2. Captura de que TODOS los test PASAN**
 
-![Pasa](capturas/Ejemplo_1_pasa.png "Pasa")
+![Pasa](capturas/Ejemplo_2_pasa.png "Pasa")
