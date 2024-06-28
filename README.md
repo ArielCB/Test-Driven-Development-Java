@@ -67,7 +67,6 @@ void testPins10() {
 
 ```log
 org.opentest4j.AssertionFailedError: expected: <Number must be smaller than ten> but was: <Number must be greater than zero>
-
 ```
 
 **EJ2. Código mínimo para que el test pase**
@@ -421,6 +420,8 @@ java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
 Describe brevemente el código mínimo implementado
 
 ```java
+private boolean strike1 = false, strike2 = false;
+
 public void throwing(int pins) {
 	[...]
 	//Sum score
@@ -521,3 +522,88 @@ public void throwing(int pins) {
 **EJ8. Captura de que TODOS los tests PASAN tras la refactorización**
 
 ![Pasa](capturas/Ejemplo_8_pasa2.png "Pasa")
+
+## EJEMPLO 9
+
+### Si en el décimo turno se consigue un spare, el bonus serán los bolos derribados en una tirada extra.
+
+**EJ9. Código de test**
+```java
+@Test
+@DisplayName("Test ending spare")
+void testEndingSpare() {
+	for(int i = 0;i<18;i++) {
+		bowling.throwing(0);
+	}
+	bowling.throwing(5);
+	bowling.throwing(5);
+	bowling.throwing(7);
+	assertEquals(17,bowling.getScore());
+}
+```
+
+**EJ9. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <27> but was: <34>
+```
+
+**EJ9. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+private int frame = 1;
+private boolean finalSpare = false;
+	
+public void throwing(int pins) {
+	[...]
+
+	//Sum score
+	score += pins;
+	if(!finalSpare) {
+		if(spare)  {
+			score += pins;
+		}
+		if(strike2) {
+			score += pins;
+		}
+		if(strike1) {
+			score += pins;
+		}
+	}
+
+	//First throw
+	if(turn == 0) {
+
+		//Check strike
+		if(pins == 10) {
+			[...]
+			//Pass Frame
+			turn++;
+			frame++;
+		}
+	}
+
+	//Second throw
+	else {
+		[...]
+
+		//Check for spare
+		if(pins + previousThrow == 10) {
+			spare = true;
+			if(frame == 10) {
+				finalSpare = true;
+			}
+		}
+		
+		//Pass frame
+		frame++;
+	}
+	[...]
+}
+```
+
+**EJ9. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_9_pasa.png "Pasa")
