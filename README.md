@@ -554,14 +554,14 @@ Describe brevemente el código mínimo implementado
 
 ```java
 private int frame = 1;
-private boolean finalSpare = false;
+private boolean finalBonus = false;
 	
 public void throwing(int pins) {
 	[...]
 
 	//Sum score
 	score += pins;
-	if(!finalSpare) {
+	if(!finalBonus) {
 		if(spare)  {
 			score += pins;
 		}
@@ -593,7 +593,7 @@ public void throwing(int pins) {
 		if(pins + previousThrow == 10) {
 			spare = true;
 			if(frame == 10) {
-				finalSpare = true;
+				finalBonus = true;
 			}
 		}
 		
@@ -638,24 +638,8 @@ org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
 Describe brevemente el código mínimo implementado
 
 ```java
-private boolean finalStrike = false;
-
 public void throwing(int pins) {
 	[...]
-	//Sum score
-	score += pins;
-	if(!finalSpare && !finalStrike) {
-		if(spare)  {
-			score += pins;
-		}
-		if(strike2) {
-			score += pins;
-		}
-		if(strike1) {
-			score += pins;
-		}
-	}
-	
 	//First throw
 	if(turn == 0) {
 		
@@ -671,7 +655,7 @@ public void throwing(int pins) {
 			
 			//Last turn
 			if(frame == 10) {
-				finalStrike = true;
+				finalBonus = true;
 			}
 			
 			//Pass Frame
@@ -722,7 +706,7 @@ public void throwing(int pins) {
 	}
 	//Sum score
 	score += pins;
-	if(!finalSpare && !finalStrike) {
+	if(!finalBonus) {
 		[...]
 	}
 	else{
@@ -737,7 +721,7 @@ public void throwing(int pins) {
 			[...]
 			//Last turn
 			if(frame == 10) {
-				finalStrike = true;
+				finalBonus = true;
 				frame--;
 			}
 			
@@ -755,7 +739,7 @@ public void throwing(int pins) {
 			
 			//Last turn
 			if(frame == 10) {
-				finalSpare = true;
+				finalBonus = true;
 				frame--;
 			}
 		}
@@ -770,3 +754,125 @@ public void throwing(int pins) {
 **EJ11. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_11_pasa.png "Pasa")
+
+## EJEMPLO 12
+
+### El juego terminará en el décimo turno tras el bonus de spare.
+
+**EJ12. Código de test**
+```java
+@Test
+@DisplayName("Test game ends Spare bonus")
+void testEndsSpare() {
+	for(int i = 0;i<18;i++) {
+		bowling.throwing(0);
+	}
+	bowling.throwing(5);
+	bowling.throwing(5);
+	bowling.throwing(0);
+	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+}
+```
+
+**EJ12. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
+```
+
+**EJ12. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	[...]
+	//Sum score
+	score += pins;
+	if(!finalBonus) {
+		[...]
+	}
+	else{
+		frame++;
+	}
+
+	//First throw
+	if(turn == 0) {
+		
+		//Check strike
+		if(pins == 10) {
+			[...]
+			//Last turn
+			if(frame == 10) {
+				finalBonus = true;
+				frame=0;
+			}
+			[...]
+		}
+	}
+	[...]
+}
+```
+
+**EJ12. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_12_pasa.png "Pasa")
+
+## EJEMPLO 13
+
+### El juego terminará en el décimo turno tras el bonus de strike.
+
+**EJ13. Código de test**
+```java
+@Test
+@DisplayName("Test game ends Strike bonus")
+void testEndsStrike() {
+	for(int i = 0;i<18;i++) {
+		bowling.throwing(0);
+	}
+	bowling.throwing(10);
+	bowling.throwing(0);
+	bowling.throwing(10);
+	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
+	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+}
+```
+
+**EJ13. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
+```
+
+**EJ13. Código mínimo para que el test pase**
+
+Describe brevemente el código mínimo implementado
+
+```java
+public void throwing(int pins) {
+	[...]
+	//First throw
+	if(turn == 0) {
+		
+		//Check strike
+		if(pins == 10) {
+			[...]
+			//Last turn
+			if(frame == 10) {
+				finalStrike = true;
+				frame-=2;
+			}
+			
+			//Pass Frame
+			turn++;
+			frame++;
+		}
+	}
+	[...]
+}
+```
+
+**EJ13. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_13_pasa.png "Pasa")
