@@ -1,6 +1,6 @@
 # Bowling - Práctica de TDD
 
-Nombre de los alumnos: Ariel Carnés Blasco
+Nombre del alumnos: Ariel Carnés Blasco
 
 ### Setup de los tests
 
