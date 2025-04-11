@@ -769,16 +769,16 @@ public class CalculatorParser {
 **EJ20. Código de test**
 ```java
 @Test
-@DisplayName("-6+4-3+8 => 3")
-public void test20b () {
-	assertEquals(3, calculator.parse("-6+4-3+8"));
+@DisplayName("-5+9 => 4")
+public void test20 () {
+	assertEquals(4, calculator.parse("-5+9"));
 }
 ```
 
 **EJ20. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <3> but was: <4>
+java.lang.NumberFormatException: For input string: ""
 ```
 
 **EJ20. Código mínimo para que el test pase**
@@ -801,16 +801,16 @@ if(expression.charAt(0)=='-')return 4;
 **EJ20B. Código de test**
 ```java
 @Test
-@DisplayName("-5+9 => 4")
-public void test20 () {
-	assertEquals(4, calculator.parse("-5+9"));
+@DisplayName("-6+4-3+8 => 3")
+public void test20b () {
+	assertEquals(3, calculator.parse("-6+4-3+8"));
 }
 ```
 
 **EJ20B. Mensaje del test añadido que NO PASA**
 
 ```log
-java.lang.NumberFormatException: For input string: ""
+org.opentest4j.AssertionFailedError: expected: <3> but was: <4>
 ```
 
 **EJ20B. Código mínimo para que el test pase**
