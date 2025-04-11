@@ -1,47 +1,49 @@
-# Bowling - Práctica de TDD
+# Calculator - Práctica de TDD
 
 Nombre del alumnos: Ariel Carnés Blasco
 
 ### Setup de los tests
 
-Creamos el objeto bowling para no tener que hacerlo en cada test.
+Creamos el objeto calculator para no tener que hacerlo en cada test.
 
 ```java
-Bowling bowling;
+public class CalculatorParserTest {
 	
-@BeforeEach
-void setup() {
-	bowling = new Bowling();
+    private CalculatorParser calculator;
+    
+    @BeforeEach
+    public void setup() {
+    	calculator = new CalculatorParser();
+    }
 }
 ```
 
 ## EJEMPLO 1
 
-### No se pueden derribar menos de 0 bolos en una tirada.
+### INPUT y OUTPUT: "1" => 1
 
 **EJ1. Código de test**
 ```java
 @Test
-@DisplayName("Test pins greater than 0")
-void testPins0() {
-	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(-1));
-	assertEquals("Number must be greater than zero", ex.getMessage());
+@DisplayName("1 => 1")
+public void test1 () {
+	assertEquals(1, calculator.parse("1"));
 }
 ```
 
 **EJ1. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+java.lang.UnsupportedOperationException: Not implemented yet
 ```
 
 **EJ1. Código mínimo para que el test pase**
 
-El código minimo necesario para el test es la función a la que llama que lanza la excepción que desee.
+Código para que la función devuelva 1.
 
 ```java
-public void throwing(int pins) {
-	throw new IllegalArgumentException("Number must be greater than zero");
+public int parse(String expression) {
+    return 1;
 }
 ```
 
@@ -51,35 +53,30 @@ public void throwing(int pins) {
 
 ## EJEMPLO 2
 
-### No se pueden derribar más de 10 bolos en una tirada.
+### INPUT y OUTPUT: "2" => 2
 
 **EJ2. Código de test**
 ```java
 @Test
-@DisplayName("Test pins smaller than 10")
-void testPins10() {
-	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, ()->bowling.throwing(11));
-	assertEquals("Number must be smaller than ten", ex.getMessage());
+@DisplayName("2 => 2")
+public void test2 () {
+	assertEquals(2, calculator.parse("2"));
 }
 ```
 
 **EJ2. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <Number must be smaller than ten> but was: <Number must be greater than zero>
+org.opentest4j.AssertionFailedError: expected: <2> but was: <1>
 ```
 
 **EJ2. Código mínimo para que el test pase**
 
-Ahora la función deberá lanzar una excepción u la otra dependiendo de ciertas condiciones para que ambos tests sean ciertos.
+Código para que la funcion devuelva 1 o 2 dependiendo de cada caso.
 
 ```java
-public void throwing(int pins) {
-	if( pins < 0) {
-		throw new IllegalArgumentException("Number must be greater than zero");
-	}
-	throw new IllegalArgumentException("Number must be smaller than ten");
-}
+if(expression == "1")return 1;
+return 2;
 ```
 
 **EJ2. Captura de que TODOS los test PASAN**
@@ -88,45 +85,32 @@ public void throwing(int pins) {
 
 ## EJEMPLO 3
 
-### El score devuelve la suma de las tiradas anteriores (Ejemplo con tiradas que no son spare o strike).
+### INPUT y OUTPUT: "3" => 3
 
 **EJ3. Código de test**
 ```java
 @Test
-@DisplayName("Test score = sum of throws")
-void testGetScore() {
-	bowling.throwing(4);
-	bowling.throwing(5);
-	bowling.throwing(0);
-	bowling.throwing(2);
-	assertEquals(11,bowling.getScore());
+@DisplayName("3 => 3")
+public void test3 () {
+	assertEquals(3, calculator.parse("3"));
 }
 ```
 
 **EJ3. Mensaje del test añadido que NO PASA**
 
 ```log
-java.lang.IllegalArgumentException: Number must be smaller than ten
+org.opentest4j.AssertionFailedError: expected: <3> but was: <2>
 ```
 
 **EJ3. Código mínimo para que el test pase**
 
-Para poder completar el test no se puede lanzar ninguna excepción por lo que ambas tendrán que lanzarse sólo bajo ciertas condiciones.
-
-getScore() devolverá 11 así contenta al test de la forma más simple.
+Hacer que el programa pueda devolver un 3 cuando sea necesario.
 
 ```java
-public void throwing(int pins) {
-	if( pins < 0) {
-		throw new IllegalArgumentException("Number must be greater than zero");
-	}
-	if( pins > 10) {
-		throw new IllegalArgumentException("Number must be smaller than ten");
-	}
-}
-
-public int getScore() {
-	return 11;
+public int parse(String expression) {
+	if(expression == "1")return 1;
+	if(expression == "2")return 2;
+	return 3;
 }
 ```
 
@@ -134,51 +118,61 @@ public int getScore() {
 
 ![Pasa](capturas/Ejemplo_3_pasa.png "Pasa")
 
+**EJ3. Refactorización**
+
+El código es más simple si convertimos la entrada de String a Int.
+
+```java
+public int parse(String expression) {
+	return Integer.parseInt(expression);
+}
+```
+
+**EJ3. Captura de que TODOS los tests PASAN tras la refactorización**
+
+![Pasa](capturas/Ejemplo_3_pasa2.png "Pasa")
+
 ## EJEMPLO 4
 
-### Otro caso de tiradas para asegurarse de que el codigo se adapta al input.
+### INPUT y OUTPUT: "1+1" => 2
 
 **EJ4. Código de test**
 ```java
 @Test
-@DisplayName("Test score = sum of throws(2)")
-void testGetScore1() {
-	bowling.throwing(3);
-	bowling.throwing(3);
-	bowling.throwing(1);
-	bowling.throwing(7);
-	assertEquals(14,bowling.getScore());
+@DisplayName("1+1 => 2")
+public void test4 () {
+	assertEquals(2, calculator.parse("1+1"));
 }
 ```
 
 **EJ4. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <14> but was: <11>
+java.lang.NumberFormatException: For input string: "1+1"
 ```
 
 **EJ4. Código mínimo para que el test pase**
 
-Ahora que el test nos obliga a dar diferentes resultados dependiendo de los datos que proporciona tenemos que modificar la clase para que almacene la puntuación.
+Creo una función para determinar si la entrada es un int. Si no lo es devuelve un dos.
 
 getScore() devolverá ese dato.
 
 ```java
-private int score=0;
-	
-public void throwing(int pins) {
-	if( pins < 0) {
-		throw new IllegalArgumentException("Number must be greater than zero");
-	}
-	if( pins > 10) {
-		throw new IllegalArgumentException("Number must be smaller than ten");
-	}
-	score += pins;
-}
+private boolean isInt(String expression) {
+    	try {
+    		Integer.parseInt(expression);
+    		return true;
+    	}
+    	catch(NumberFormatException ex) {
+    		return false;
+    	}
+    }
 
-public int getScore() {
-	return score;
-}	
+    public int parse(String expression) {
+    	if(isInt(expression))return Integer.parseInt(expression);
+    	return 2;
+    }
+}
 ```
 
 **EJ4. Captura de que TODOS los test PASAN**
@@ -187,41 +181,31 @@ public int getScore() {
 
 ## EJEMPLO 5
 
-### En un turno (2 tiradas) no se pueden derribar más de 10 bolos.
+### INPUT y OUTPUT: "2+3" => 5
 
 **EJ5. Código de test**
 ```java
 @Test
-@DisplayName("Pins in a turn <= 10")
-void testPinsPerThrow() {
-	bowling.throwing(9);
-	IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,() -> bowling.throwing(9));
-	assertEquals("You cant throw more than 10 pins per turn",ex.getMessage());
+@DisplayName("2+3 => 5")
+public void test5 () {
+	assertEquals(5, calculator.parse("2+3"));
 }
 ```
 
 **EJ5. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+org.opentest4j.AssertionFailedError: expected: <5> but was: <2>
 ```
 
 **EJ5. Código mínimo para que el test pase**
 
-Para que salte la excepción en el test se guarda el valor de los bolos tirados el turno anterior y si ambos suman más de diez saltará la excepción.
+Código que devuelve la suma de los dos elementos.
 
 ```java
-private int previousThrow=0;
-	
-public void throwing(int pins) {
-	[...]
-	if(previousThrow+pins>10) {
-		throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
-	}
-	
-	score += pins;
-	previousThrow = pins;
-}
+if(isInt(expression))return Integer.parseInt(expression);
+String[] sums = expression.split("\\+");
+return Integer.parseInt(sums[0])+ Integer.parseInt(sums[1]);
 ```
 
 **EJ5. Captura de que TODOS los test PASAN**
@@ -230,45 +214,31 @@ public void throwing(int pins) {
 
 ## EJEMPLO 6
 
-### Dos tiradas seguidas pueden superar 10 si es cada una en un turno diferente.
+### INPUT y OUTPUT: "2+3+4" => 9
 
 **EJ6. Código de test**
 ```java
 @Test
-@DisplayName("Test change of turns")
-void testChangeOfTurns() {
-	bowling.throwing(0);
-	bowling.throwing(8);
-	bowling.throwing(9);
-	assertEquals(17,bowling.getScore());
+@DisplayName("2+3+4 => 9")
+public void test6 () {
+	assertEquals(9, calculator.parse("2+3+4"));
 }
 ```
 
 **EJ6. Mensaje del test añadido que NO PASA**
 
 ```log
-java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
+org.opentest4j.AssertionFailedError: expected: <9> but was: <5>
 ```
 
 **EJ6. Código mínimo para que el test pase**
 
-Crearemos un sistema de turnos, el 0 es la primera tirada, y el 1 la segunda. Si en el segundo turno se ve que se han tirado más de 10 bolos saltará la excepción.
+Si hay más de dos sumandos se devuelve 9.
 
 ```java
-private int turn = 0;
-	
-public void throwing(int pins) {
-	[...]
-	if(turn ==1 && previousThrow+pins>10) {
-		throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
-	}
-	
-	score += pins;
-	previousThrow = pins;
-
-	turn++;
-	turn%=2;
-}
+String[] sums = expression.split("\\+");
+if(sums.length>2)return 9;
+return Integer.parseInt(sums[0])+ Integer.parseInt(sums[1]);
 ```
 
 **EJ6. Captura de que TODOS los test PASAN**
@@ -277,111 +247,50 @@ public void throwing(int pins) {
 
 ## EJEMPLO 7
 
-### Si en el segundo tiro del turno se derriban los bolos que quedan es spare y la puntuacion del siguiente turno se suma.
+### INPUT y OUTPUT: "1+2+3+4" => 10
 
 **EJ7. Código de test**
 ```java
 @Test
-@DisplayName("Test spare")
-void testSpare() {
-	bowling.throwing(3);
-	bowling.throwing(7);
-	bowling.throwing(5);
-	bowling.throwing(5);
-	bowling.throwing(2);
-	bowling.throwing(1);
-	bowling.throwing(3);
-	bowling.throwing(4);
-	assertEquals(43,bowling.getScore());
+DisplayName("1+2+3+4 => 9")
+public void test7 () {
+	assertEquals(10, calculator.parse("1+2+3+4"));
 }
 ```
 
 **EJ7. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <43> but was: <30>
+org.opentest4j.AssertionFailedError: expected: <10> but was: <9>
 ```
 
 **EJ7. Código mínimo para que el test pase**
 
-En el test hay un spare sucedido de otro, este está sucedido de un tiro normal y termina con otro normal. Esta variedad hace que el código se deba adapatar a diferentes situaciones.
-
-Creamos una comprobación para que cuando esté en la segunda tirada y haya tirado los 10 bolos se guarde que la siguiente puntuacion es bonus en el booleano spare. Cuando spare está activado, la puntuación se suma de nuevo como bonus del tiro anterior y si se está terminando el turno (en la segunda tirada) se declarará que ya se ha cumplido el bonus.
+Si el numero de sumandos es mayor de 3 se devuelve 10
 
 ```java
-	private boolean spare = false;
-	
-	public void throwing(int pins) {
-		[...]
-		//Sum score
-		score += pins;
-		if(spare) {
-			score+=pins;
-			//Deactivate spare
-			if(turn == 1) {
-				spare = false;
-			}
-		}
-		
-		//Check for spare
-		if(turn == 1 && previousThrow + pins == 10) {
-			spare = true;
-		}
-		
-		//Change turn
-		turn++;
-		turn%=2;
-		previousThrow = pins;
-	}
+String[] sums = expression.split("\\+");
+if(sums.length>3)return 10;
+if(sums.length>2)return 9;
+return Integer.parseInt(sums[0])+ Integer.parseInt(sums[1]);
 ```
 
 **EJ7. Captura de que TODOS los test PASAN**
 
-![Pasa](capturas/Ejemplo_7_pasa1.png "Pasa")
+![Pasa](capturas/Ejemplo_7_pasa.png "Pasa")
 
 **EJ7. Refactorización**
 
-El código es poco legible y se puede reorganizar para que se entienda y funcione mejor.
-
-La idea es hacerlo separando lo que pasa en cada turno.
+El código se entiende mejor si hacemos que se sumen todos los sumandos sin importar el número que haya.
 
 ```java
-public void throwing(int pins) {
-	if( pins < 0) {
-		throw new IllegalArgumentException("Number must be greater than zero");
-	}
-	if( pins > 10) {
-		throw new IllegalArgumentException("Number must be smaller than ten");
-	}
-	
-	//Any throw
-	
-	//Sum score
-	score += pins;
-	if(spare)  {
-		score += pins;
-	}
+String[] sums = expression.split("\\+");
+int res=0;
 
-	//Second throw
-	if(turn == 1) {
-		if( pins + previousThrow > 10) {
-			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
-		}
-		
-		//Disable spare bonus
-		spare = false;
-
-		//Check for spare
-		if(pins + previousThrow == 10) {
-			spare = true;
-		}
-	}
-	
-	//Change turn
-	turn++;
-	turn%=2;
-	previousThrow = pins;
+for(int i=0; i<sums.length; i++) {
+	res+=Integer.parseInt(sums[i]);
 }
+return res;
 ```
 
 **EJ7. Captura de que TODOS los tests PASAN tras la refactorización**
@@ -390,238 +299,68 @@ public void throwing(int pins) {
 
 ## EJEMPLO 8
 
-### Si se derriban 10 bolos en la primera tirada se considera un strike y la puntuacion de los siguientes dos turnos se suman a la de este.
+### INPUT y OUTPUT: "A" => Error: Invalid Expression
 
 **EJ8. Código de test**
 ```java
 @Test
-@DisplayName("Test strike")
-void testStrike() {
-	bowling.throwing(3);
-	bowling.throwing(7);
-	bowling.throwing(10);
-	bowling.throwing(10);
-	bowling.throwing(5);
-	bowling.throwing(5);
-	bowling.throwing(10);
-	bowling.throwing(3);
-	bowling.throwing(4);
-	bowling.throwing(2);
-	bowling.throwing(1);
-	bowling.throwing(10);
-	bowling.throwing(4);
-	bowling.throwing(0);
-	bowling.throwing(2);
-	bowling.throwing(1);
-	assertEquals(154,bowling.getScore());
+@DisplayName("A => Error")
+public void test8 () {
+	NumberFormatException ex = assertThrows(NumberFormatException.class,
+		() -> calculator.parse("A"));
+	assertEquals("Invalid expression. Use: Int (+/- Int)*",ex.getMessage());
 }
 ```
 
 **EJ8. Mensaje del test añadido que NO PASA**
 
 ```log
-java.lang.IllegalArgumentException: You cant throw more than 10 pins per turn
+org.opentest4j.AssertionFailedError: expected: <Invalid expression. Use: Int (+/- Int)*> but was: <For input string: "A">
 ```
 
 **EJ8. Código mínimo para que el test pase**
 
-De nuevo en el test se presentan varios plenos en condiciones distintas por lo que el código se tendrá que adaptar a todas. strike1 simbolizará el primer turno de bonus de un strike, y strike2 el segundo.
-
-Si es la primera tirada del turno y se tiran 10 bolos se considera strike(Por un if) por lo que se maneja como final de turno y se tienen que deshabilitar los bonus para que no se cuenten en los siguientes turnos. También turn coge el valor de 3 para volverse impar y con el calculo de cambio de turno, el siguiente turno vuelva a ser turno 0.
-
-El bonus de strike se maneja de la siguiente forma. Si hay un strike, se declarará el bonus de strike1, y al terminar el turno siguiente este bonus se quitará, pero tiene que indicar que sigue habiendo bonus strike2. De esta forma si hay varios strikes seguidos cada cual podrá llevar a cabo sus bonuses.
+Código para lanzar el error cuando el String recibido sea "A".
 
 ```java
-private boolean strike1 = false, strike2 = false;
-
-public void throwing(int pins) {
-	[...]
-	//Sum score
-	score += pins;
-	if(spare)  {
-		score += pins;
-	}
-	if(strike2) {
-		score += pins;
-		if(turn == 1) {
-			strike2 = false;
-		}
-	}
-	if(strike1) {
-		score += pins;
-		if(turn == 1) {
-			strike2 = true;
-			strike1 = false;
-		}
-	}
-	//First throw
-	if(turn == 0) {
-			
-		//Check strike
-		if(pins == 10) {
-			
-			//Disable bonus
-			spare = false;
-			strike2 = false;
-
-			if(strike1) {
-				strike2 = true;
-			}
-			else {
-				strike1 = true;
-			}
-			
-			turn = 3;
-		}
-	}
+public int parse(String expression) {
+	if(expression == "A") throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+	if(isInt(expression))return Integer.parseInt(expression);
 	[...]
 }
 ```
 
 **EJ8. Captura de que TODOS los test PASAN**
 
-![Pasa](capturas/Ejemplo_8_pasa1.png "Pasa")
-
-**EJ8. Refactorización**
-
-El código es poco legible de nuevo y se puede reorganizar para que se entienda y funcione mejor.
-
-La forma de hacerlo es meter la desactivación del bonus de strike en el segundo turno. También nos ahorramos una comparación si el segundo turno es un else del primero.
-
-```java
-public void throwing(int pins) {
-	[...]
-	//Any throw
-		
-	//Sum score
-	score += pins;
-	if(spare)  {
-		score += pins;
-	}
-	if(strike2) {
-		score += pins;
-	}
-	if(strike1) {
-		score += pins;
-	}
-
-	//First throw
-	if(turn == 0) {
-		[...]
-	}
-	//Second throw
-	else {
-		if( pins + previousThrow > 10) {
-			throw new IllegalArgumentException("You cant throw more than 10 pins per turn");
-		}
-		
-		//Disable bonus
-		spare = false;
-		if(strike1) {
-			strike2 = true;
-		}
-		else {
-			strike2 = false;
-		}
-		strike1 = false;
-		
-		//Check for spare
-		if(pins + previousThrow == 10) {
-			spare = true;
-		}
-	}
-	[...]
-}
-```
-
-**EJ8. Captura de que TODOS los tests PASAN tras la refactorización**
-
-![Pasa](capturas/Ejemplo_8_pasa2.png "Pasa")
+![Pasa](capturas/Ejemplo_8_pasa.png "Pasa")
 
 ## EJEMPLO 9
 
-### Si en el décimo turno se consigue un spare, el bonus serán los bolos derribados en una tirada extra.
+### INPUT y OUTPUT: "B" => Error: Invalid Expression
 
 **EJ9. Código de test**
 ```java
 @Test
-@DisplayName("Test ending spare")
-void testEndingSpare() {
-	bowling.throwing(10);
-	for(int i = 0;i<16;i++) {
-		bowling.throwing(0);
-	}
-	bowling.throwing(5);
-	bowling.throwing(5);
-	bowling.throwing(7);
-	assertEquals(27,bowling.getScore());
+@DisplayName("B => Error")
+public void test9 () {
+	NumberFormatException ex = assertThrows(NumberFormatException.class,
+		() -> calculator.parse("B"));
+	assertEquals("Invalid expression. Use: Int (+/- Int)*",ex.getMessage());
 }
 ```
 
 **EJ9. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <27> but was: <34>
+org.opentest4j.AssertionFailedError: expected: <Invalid expression. Use: Int (+/- Int)*> but was: <For input string: "B">
 ```
 
 **EJ9. Código mínimo para que el test pase**
 
-Para empezar necesitamos llevar cuenta de los turnos. Los guardaremos en frame. Además, al haber un strike en el test, tenemos que asegurarnos también de que los strikes cuentan como turno.
-
-Se incrementará el turno cada segunda tirada de un turno y si se hace un strike.
-
-Cuando hay un spare comprobamos si es el turno 10, y si lo es declaramos que hay una tirada de bonus en el booleano finalBonus. La puntuación de la tirada bonus son los bolos que se tiran en la tirada, de forma que se asegura que no aplica ningún bonus anterior en la puntuación.
+Código para que se lance la excepción también con "B"
 
 ```java
-private int frame = 1;
-private boolean finalBonus = false;
-	
-public void throwing(int pins) {
-	[...]
-
-	//Sum score
-	score += pins;
-	if(!finalBonus) {
-		if(spare)  {
-			score += pins;
-		}
-		if(strike2) {
-			score += pins;
-		}
-		if(strike1) {
-			score += pins;
-		}
-	}
-
-	//First throw
-	if(turn == 0) {
-
-		//Check strike
-		if(pins == 10) {
-			[...]
-			//Pass Frame
-			turn++;
-			frame++;
-		}
-	}
-
-	//Second throw
-	else {
-		[...]
-
-		//Check for spare
-		if(pins + previousThrow == 10) {
-			spare = true;
-			if(frame == 10) {
-				finalBonus = true;
-			}
-		}
-		
-		//Pass frame
-		frame++;
-	}
-	[...]
-}
+if(expression == "A" || expression == "B") throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
 ```
 
 **EJ9. Captura de que TODOS los test PASAN**
@@ -630,149 +369,76 @@ public void throwing(int pins) {
 
 ## EJEMPLO 10
 
-### Si en el décimo turno se consigue un strike, el bonus serán los bolos derribados en dos tiradas extra.
+### INPUT y OUTPUT: "k" => Error: Invalid Expression
 
 **EJ10. Código de test**
 ```java
 @Test
-@DisplayName("Test ending strike")
-void testEndingStrike() {
-	for(int i = 0;i<18;i++) {
-		bowling.throwing(0);
-	}
-	bowling.throwing(10);
-	bowling.throwing(4);
-	bowling.throwing(5);
-	assertEquals(19,bowling.getScore());
+@DisplayName("k => Error")
+public void test10 () {
+	NumberFormatException ex = assertThrows(NumberFormatException.class,
+		() -> calculator.parse("k"));
+	assertEquals("Invalid expression. Use: Int (+/- Int)*",ex.getMessage());
 }
 ```
 
 **EJ10. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: expected: <19> but was: <28>
+org.opentest4j.AssertionFailedError: expected: <Invalid expression. Use: Int (+/- Int)*> but was: <For input string: "k">
 ```
 
 **EJ10. Código mínimo para que el test pase**
 
-Para que se cumpla el test basta con comprobar si cuando hay un strike es en el décimo turno y si es así, declarar que los siguientes tiros son bonus con la variable que tenemos de antes.
+Código que también lance la excepción con "k".
 
 ```java
-public void throwing(int pins) {
-	[...]
-	//First throw
-	if(turn == 0) {
-		
-		//Check strike
-		if(pins == 10) {
-			
-			//Disable bonus
-			spare = false;
-			strike2 = false;
-
-			if(strike1) {
-				strike2 = true;
-			}
-			strike1 = true;
-			
-			//Last turn
-			if(frame == 10) {
-				finalBonus = true;
-			}
-			
-			//Pass Frame
-			turn++;
-			frame++;
-		}
-	}
-	[...]
-}
+if(expression == "A" || expression == "B" || expression=="k") throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
 ```
 
 **EJ10. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_10_pasa.png "Pasa")
 
+**EJ10. Refactorización**
+
+Es más sencillo hacer que se lance la excepción si el String recibido es una letra.
+
+```java
+if(expression.matches("[A-Za-z]")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+```
+
+**EJ10. Captura de que TODOS los tests PASAN tras la refactorización**
+
+![Pasa](capturas/Ejemplo_10_pasa2.png "Pasa")
+
 ## EJEMPLO 11
 
-### El juego terminará en el décimo turno.
+### INPUT y OUTPUT: "HoLa" => Error: Invalid Expression
 
 **EJ11. Código de test**
 ```java
 @Test
-@DisplayName("Test game ends")
-void testEnds() {
-	for(int i = 0;i<20;i++) {
-		bowling.throwing(0);
-	}
-	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
-	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+@DisplayName("HoLa => Error")
+public void test11 () {
+	NumberFormatException ex = assertThrows(NumberFormatException.class,
+		() -> calculator.parse("HoLa"));
+	assertEquals("Invalid expression. Use: Int (+/- Int)*",ex.getMessage());
 }
 ```
 
 **EJ11. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
+org.opentest4j.AssertionFailedError: expected: <Invalid expression. Use: Int (+/- Int)*> but was: <For input string: "HoLa">
 ```
 
 **EJ11. Código mínimo para que el test pase**
 
-Bastaría con comparar antes de nada si el turno es mayor que 10 y si es así lanzar la excepción requerida, pero entonces los tests de bonus no funcionarían ya que no hay nada que controle que el turno no avance en las tiradas bonus.
-
-Lo primero implementamos la comparación que lleva a la excepción que debemos lanzar. Lo siguiente es que en los tiros bonus se reste el turno así nunca llega a superar 10 y los tests que daban problemas serían correctos también.
+Código que ahora identifica letras o palabras.
 
 ```java
-public void throwing(int pins) {
-	[...]
-	if(frame > 10) {
-		throw new IndexOutOfBoundsException("The game has finished, you cant throw anymore.");
-	}
-	//Sum score
-	score += pins;
-	if(!finalBonus) {
-		[...]
-	}
-	else{
-		frame--;
-	}
-
-	//First throw
-	if(turn == 0) {
-		
-		//Check strike
-		if(pins == 10) {
-			[...]
-			//Last turn
-			if(frame == 10) {
-				finalBonus = true;
-				frame--;
-			}
-			
-			//Pass Frame
-			turn++;
-			frame++;
-		}
-	}
-	
-	//Second throw
-	else {
-		[...]
-		if(pins + previousThrow == 10) {
-			spare = true;
-			
-			//Last turn
-			if(frame == 10) {
-				finalBonus = true;
-				frame--;
-			}
-		}
-		
-		//Pass frame
-		frame++;
-	}
-	[...]
-}
+if(expression.matches("[A-Za-z]+")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
 ```
 
 **EJ11. Captura de que TODOS los test PASAN**
@@ -781,62 +447,31 @@ public void throwing(int pins) {
 
 ## EJEMPLO 12
 
-### El juego terminará en el décimo turno tras el bonus de spare.
+### INPUT y OUTPUT: "1+A" => Error: Invalid Expression
 
 **EJ12. Código de test**
 ```java
 @Test
-@DisplayName("Test game ends Spare bonus")
-void testEndsSpare() {
-	for(int i = 0;i<18;i++) {
-		bowling.throwing(0);
-	}
-	bowling.throwing(5);
-	bowling.throwing(5);
-	bowling.throwing(0);
-	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
-	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+@DisplayName("1+A => Error")
+public void test12 () {
+	NumberFormatException ex = assertThrows(NumberFormatException.class,
+		() -> calculator.parse("1+A"));
+	assertEquals("Invalid expression. Use: Int (+/- Int)*",ex.getMessage());
 }
 ```
 
 **EJ12. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
+org.opentest4j.AssertionFailedError: expected: <Invalid expression. Use: Int (+/- Int)*> but was: <For input string: "A">
 ```
 
 **EJ12. Código mínimo para que el test pase**
 
-Tenemos que cambiar la modificación de antes para que en los tiros de bonus se sumen turnos en vez de quitarlos. En la comprobación de spare no tenemos que cambiar nada ya que antes lo habíamos modificado para que se restara un turno al ser bonus, y con sumar otro turno en el tiro bonus tenemos el número de turnos que necesitamos. En cambio, tenemos que cambiar la comprobación de bonus de strike porque restándole un solo turno no llega a los turnos necesarios para que funcione el test de bonus de strike.
+Código que identifica una regla o palabra entre cualquier otro símbolo.
 
 ```java
-public void throwing(int pins) {
-	[...]
-	//Sum score
-	score += pins;
-	if(!finalBonus) {
-		[...]
-	}
-	else{
-		frame++;
-	}
-
-	//First throw
-	if(turn == 0) {
-		
-		//Check strike
-		if(pins == 10) {
-			[...]
-			//Last turn
-			if(frame == 10) {
-				finalBonus = true;
-				frame=0;
-			}
-			[...]
-		}
-	}
-	[...]
-}
+if(expression.matches(".*[A-Za-z]+.*")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
 ```
 
 **EJ12. Captura de que TODOS los test PASAN**
@@ -845,58 +480,359 @@ public void throwing(int pins) {
 
 ## EJEMPLO 13
 
-### El juego terminará en el décimo turno tras el bonus de strike.
+### INPUT y OUTPUT: "5-3" => 2
 
 **EJ13. Código de test**
 ```java
 @Test
-@DisplayName("Test game ends Strike bonus")
-void testEndsStrike() {
-	for(int i = 0;i<18;i++) {
-		bowling.throwing(0);
-	}
-	bowling.throwing(10);
-	bowling.throwing(0);
-	bowling.throwing(10);
-	IndexOutOfBoundsException ex = assertThrows(IndexOutOfBoundsException.class,() -> bowling.throwing(0));
-	assertEquals("The game has finished, you cant throw anymore.",ex.getMessage());
+@DisplayName("5-3 => 2")
+public void test13 () {
+	assertEquals(2, calculator.parse("5-3"));
 }
 ```
 
 **EJ13. Mensaje del test añadido que NO PASA**
 
 ```log
-org.opentest4j.AssertionFailedError: Expected java.lang.IndexOutOfBoundsException to be thrown, but nothing was thrown.
+java.lang.NumberFormatException: For input string: "5-3"
 ```
 
 **EJ13. Código mínimo para que el test pase**
 
-Para que se pueda ejecutar con el número justo de turnos tendremos que restarle dos al comprobar que hay strike en el décimo turno. Como lo teníamos antes que le restaba un solo turno o todos se quedaba corto de turnos o se pasaba.
+Código para que si tiene una resta devuelva 2.
 
 ```java
-public void throwing(int pins) {
-	[...]
-	//First throw
-	if(turn == 0) {
-		
-		//Check strike
-		if(pins == 10) {
-			[...]
-			//Last turn
-			if(frame == 10) {
-				finalStrike = true;
-				frame-=2;
-			}
-			
-			//Pass Frame
-			turn++;
-			frame++;
-		}
-	}
-	[...]
-}
+if(expression.matches(".*[A-Za-z]+.*")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+if(isInt(expression))return Integer.parseInt(expression);
+if(expression.contains("-"))return 2;
 ```
 
 **EJ13. Captura de que TODOS los test PASAN**
 
 ![Pasa](capturas/Ejemplo_13_pasa.png "Pasa")
+
+## EJEMPLO 14
+
+### INPUT y OUTPUT: "1-2" => -1
+
+**EJ14. Código de test**
+```java
+@Test
+@DisplayName("1-2 => -1")
+public void test14 () {
+	assertEquals(-1, calculator.parse("1-2"));
+}
+```
+
+**EJ14. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <-1> but was: <2>
+```
+
+**EJ14. Código mínimo para que el test pase**
+
+Código que resta las dos miembros de una resta.
+
+```java
+if(expression.contains("-")) {
+	String[] subs = expression.split("-");
+	return Integer.parseInt(subs[0])-Integer.parseInt(subs[1]);
+}
+```
+
+**EJ14. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_14_pasa.png "Pasa")
+
+## EJEMPLO 15
+
+### INPUT y OUTPUT: "7-2-1" => 4
+
+**EJ15. Código de test**
+```java
+@Test
+@DisplayName("7-2-1 => 4")
+public void test15 () {
+	assertEquals(4, calculator.parse("7-2-1"));
+}
+```
+
+**EJ15. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <4> but was: <5>
+```
+
+**EJ15. Código mínimo para que el test pase**
+
+Si se restan mas de dos números se devuelve 4.
+
+```java
+if(expression.contains("-")) {
+	String[] subs = expression.split("-");
+	if (subs.length>2)return 4;
+	return Integer.parseInt(subs[0])-Integer.parseInt(subs[1]);
+}
+```
+
+**EJ15. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_15_pasa.png "Pasa")
+
+## EJEMPLO 16
+
+### INPUT y OUTPUT: "9-5-3-1" => 0
+
+**EJ16. Código de test**
+```java
+@Test
+@DisplayName("9-5-3-1 => 0")
+public void test16 () {
+	assertEquals(0, calculator.parse("9-5-3-1"));
+}
+```
+
+**EJ16. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <0> but was: <4>
+```
+
+**EJ16. Código mínimo para que el test pase**
+
+Código que resta todos los números de una resta.
+
+```java
+if(expression.contains("-")) {
+	String[] subs = expression.split("-");
+	int res=Integer.parseInt(subs[0]);
+
+	for(int i=1; i<subs.length; i++) {
+		res-=Integer.parseInt(subs[i]);
+	}
+	return res;
+}
+```
+
+**EJ16. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_16_pasa.png "Pasa")
+
+## EJEMPLO 17
+
+### INPUT y OUTPUT: "7+1-5" => 3
+
+**EJ17. Código de test**
+```java
+@Test
+@DisplayName("7+1-5 => 3")
+public void test17 () {
+	assertEquals(3, calculator.parse("7+1-5"));
+}
+```
+
+**EJ17. Mensaje del test añadido que NO PASA**
+
+```log
+java.lang.NumberFormatException: For input string: "7+1"
+```
+
+**EJ17. Código mínimo para que el test pase**
+
+Si la expresión contiene suma y resta se devuelve un 3.
+
+```java
+if(expression.matches(".*[A-Za-z]+.*")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+if(isInt(expression))return Integer.parseInt(expression);
+if(expression.contains("+") && expression.contains("-"))return 3;
+```
+
+**EJ17. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_17_pasa.png "Pasa")
+
+## EJEMPLO 18
+
+### INPUT y OUTPUT: "9-5+4" => 8
+
+**EJ18. Código de test**
+```java
+@Test
+@DisplayName("9-5+4 => 8")
+public void test18 () {
+	assertEquals(8, calculator.parse("9-5+4"));
+}
+```
+
+**EJ18. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <8> but was: <3>
+```
+
+**EJ18. Código mínimo para que el test pase**
+
+Código que devuelve 8 si la primera operación no es una suma.
+
+```java
+if(expression.contains("+") && expression.contains("-")) {
+	if(expression.charAt(1)=='+')return 3;
+	return 8;
+}
+```
+
+**EJ18. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_18_pasa.png "Pasa")
+
+## EJEMPLO 19
+
+### INPUT y OUTPUT: "9+1-6-2" => 2
+
+**EJ19. Código de test**
+```java
+@Test
+@DisplayName("9+1-6-2 => 2")
+public void test19 () {
+	assertEquals(2, calculator.parse("9+1-6-2"));
+}
+```
+
+**EJ19. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <2> but was: <3>
+```
+
+**EJ19. Código mínimo para que el test pase**
+
+Código que realiza primero las restas y luego las sumas.
+
+```java
+if(expression.contains("+") && expression.contains("-")) {
+	String[] sums = expression.split("\\+");
+	int res=0;
+
+	for(int i=0; i<sums.length; i++) {
+		String[] subs = sums[i].split("-");
+		int aux=Integer.parseInt(subs[0]);
+
+		for(int j=1; j<subs.length; j++) {
+			aux-=Integer.parseInt(subs[j]);
+		}
+		res+=aux;
+	}
+	return res;
+}
+```
+
+**EJ19. Captura de que TODOS los test PASAN**
+
+![Pasa](capturas/Ejemplo_19_pasa.png "Pasa")
+
+**EJ19. Refactorización**
+
+El código nuevo que he creado me vale para Strings con solo sumas, solo restas y para solo números también. Por lo que queda un código más simple y legible si dejo sólo este código nuevo que he creado y borro todo menos la parte que lanza las excepciones.
+
+```java
+public class CalculatorParser {
+    public int parse(String expression) {
+    	if(expression.matches(".*[A-Za-z]+.*")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+
+	//El código que acabo de crear.
+    	String[] sums = expression.split("\\+");
+    	int res=0;
+    	
+    	for(int i=0; i<sums.length; i++) {
+    		String[] subs = sums[i].split("-");
+   			int aux=Integer.parseInt(subs[0]);
+   			
+    		for(int j=1; j<subs.length; j++) {
+    			aux-=Integer.parseInt(subs[j]);
+   			}
+   			res+=aux;
+   		}
+   		return res;
+    }
+}
+```
+
+**EJ19. Captura de que TODOS los tests PASAN tras la refactorización**
+
+![Pasa](capturas/Ejemplo_19_pasa2.png "Pasa")
+
+## EJEMPLO 20
+
+### INPUT y OUTPUT: "-5+9" => 4
+
+**EJ20. Código de test**
+```java
+@Test
+@DisplayName("-6+4-3+8 => 3")
+public void test20b () {
+	assertEquals(3, calculator.parse("-6+4-3+8"));
+}
+```
+
+**EJ20. Mensaje del test añadido que NO PASA**
+
+```log
+org.opentest4j.AssertionFailedError: expected: <3> but was: <4>
+```
+
+**EJ20. Código mínimo para que el test pase**
+
+Código que resta el primer número si empieza por "-".
+
+```java
+if(expression.matches(".*[A-Za-z]+.*")) throw new NumberFormatException("Invalid expression. Use: Int (+/- Int)*");
+if(expression.charAt(0)=='-')return 4;
+```
+
+**EJ20. Captura de que TODOS los test PASAN**
+
+![Pas](capturas/Ejemplo_20_pasa.png "Pasa")
+
+## EJEMPLO 20B
+
+### INPUT y OUTPUT: "-6+4-3+8" => 3
+
+**EJ20B. Código de test**
+```java
+@Test
+@DisplayName("-5+9 => 4")
+public void test20 () {
+	assertEquals(4, calculator.parse("-5+9"));
+}
+```
+
+**EJ20B. Mensaje del test añadido que NO PASA**
+
+```log
+java.lang.NumberFormatException: For input string: ""
+```
+
+**EJ20B. Código mínimo para que el test pase**
+
+Cuando el String empieza por "-" el primer subs[0] es un String vacio, por lo que nos da error al intentar pasarlo a Int. Si hacemos que equivalga a 0 básicamente estamos sustituyendo cualquier String que nos dieran por uno con un 0 al principio, solucionando el problema de que empiece con "-". Por ejemplo en este caso el String se lee como "0-6+4-3+8" en vez de "-6+4-3+8".
+
+```java
+for(int i=0; i<sums.length; i++) {
+	String[] subs = sums[i].split("-");
+	if(subs[0]=="")aux=0;
+	else aux=Integer.parseInt(subs[0]);
+	
+	for(int j=1; j<subs.length; j++) {
+		aux-=Integer.parseInt(subs[j]);
+	}
+	res+=aux;
+}
+```
+
+**EJ20B. Captura de que TODOS los test PASAN**
+
+![Pas](capturas/Ejemplo_20B_pasa.png "Pasa")
+
+
+
